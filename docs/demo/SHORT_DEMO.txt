@@ -1,0 +1,5 @@
+Kokoro is speaking locally on a Galaxy S24 Ultra. The phone is offline, the
+voice model is already on the device, and Android is receiving audio through
+its normal text-to-speech interface. The CPU prepares text and source features
+while Qualcomm's Hexagon processor runs the neural vocoder. Playback can begin
+before the complete passage has been generated.

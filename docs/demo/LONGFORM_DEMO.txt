@@ -1,0 +1,48 @@
+The Pocket Observatory
+
+At seven forty-two on a clear Tuesday morning, Maya stepped onto the roof of
+her apartment building with a notebook, a thermos, and a computer small enough
+to fit in her pocket. The city below was already awake. A delivery bicycle
+clicked through its gears, a bus sighed at the corner, and somewhere beyond the
+brick rooftops a train sounded two patient notes.
+
+Maya was testing a simple idea: useful technology should remain useful when a
+network disappears. She switched the phone to airplane mode and opened a page
+of field notes. There was no account to sign into, no model to retrieve, and no
+server waiting on the other side of a progress spinner. She tapped Play, and
+the first sentence began.
+
+Inside the phone, several different jobs moved at once. Ordinary processor
+cores handled words, punctuation, pronunciation, timing, and the exact source
+features that shape the sound. Qualcomm's Hexagon processor handled the dense
+neural work of the vocoder. While one section of speech was being played,
+another could be prepared. The important trick was not to make every component
+race at full power. It was to give each component the work it performed well,
+keep the accelerator's critical path orderly, and return to idle quickly.
+
+The passage included awkward details on purpose. A reading engine should know
+that 24 kilohertz is a sample rate, that 1.3 times is a speed, and that a colon
+or semicolon is guidance rather than decoration. It should move naturally from
+a short sentence to a longer one, preserve a question, and survive an
+abbreviation such as Dr. without inventing an extra pause. Could a compact,
+fully local system do all of that while keeping up with continuous reading?
+
+On this phone, the answer was audible before the question had finished fading
+from the screen. The application did not send the paragraph over Wi-Fi or
+cellular data. Instead, Android delivered each request to a normal system
+text-to-speech service. That meant the same engine could work in a reader,
+navigation software, an accessibility tool, or another application that used
+Android's standard speech interface.
+
+Maya walked to the eastern edge of the roof. Sunlight had reached the upper
+windows across the street, turning each pane into a small copper mirror. Her
+notes continued without a break. Long-form speech was not one enormous burst;
+it was a carefully planned stream, with boundaries joined smoothly enough that
+the listener did not have to think about them.
+
+She wrote down the result: local speech was not merely a privacy feature. It
+was also a reliability feature. A tunnel, a crowded train, a remote trail, or a
+temporary outage could interrupt a cloud service, but it could not take away a
+model already running in her hand. The best demonstration was therefore not a
+chart by itself. It was the ordinary act of pressing Play, locking the network
+outside, and hearing the words continue.
