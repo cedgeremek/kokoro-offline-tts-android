@@ -1,0 +1,39 @@
+{
+  "release": "v1.30.1-s24-qnn",
+  "apk_sha256": "ac9bc3349b09c676e01481936b2ffe01e74cd6327fa5dad983dc1074b0b6ad57",
+  "device": {
+    "model": "SM-S928U1",
+    "soc": "Snapdragon 8 Gen 3 (SM8650)",
+    "accelerator": "Hexagon HTP v75",
+    "network_state": "airplane mode"
+  },
+  "test": {
+    "path": "native Android system-TTS self-test",
+    "voice": "af_alloy",
+    "delivery_speed": 1.0,
+    "sample_rate_hz": 24000,
+    "pcm_bytes": 114480,
+    "audio_seconds": 2.385
+  },
+  "timings_ms": {
+    "engine_bind": 129,
+    "request_to_synthesis": 6,
+    "request_to_first_audio": 306,
+    "request_to_playback": 7,
+    "total_self_test": 2731
+  },
+  "generator": {
+    "backend": "QNN_HTP",
+    "aot_bucket_frames": 192,
+    "rtf": 0.2644,
+    "derived_realtime_throughput": 3.7821,
+    "packaged_qnn_aot": true,
+    "qnn_disabled": false
+  },
+  "notes": [
+    "Warm-run latency is reported separately from cold initialization.",
+    "Derived throughput equals 1 / generator RTF.",
+    "The release video records v1.30.1 device playback audio and the on-screen diagnostic receipt.",
+    "The final APK was rebuilt from the same source with Rust path remapping after this run; accelerator artifacts and runtime logic are unchanged."
+  ]
+}

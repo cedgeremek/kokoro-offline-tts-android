@@ -15,6 +15,32 @@ accessibility tools, and anything else using Android's `TextToSpeech` API.
 > the q8 CPU fallback; extending hardware acceleration requires target-specific
 > QNN contexts. See [compatibility](docs/COMPATIBILITY.md).
 
+## Real-device demo
+
+[Watch the v1.30.1 native self-test on a Galaxy S24 Ultra](https://github.com/cedgeremek/kokoro-offline-tts-android/releases/download/v1.30.1-s24-qnn/Kokoro-v1.30.1-S24-Ultra-QNN-native-self-test.mp4)
+(16.3 seconds, 1.25 MB). This is device-playback audio captured from v1.30.1 on
+an SM-S928U1 in airplane mode—not an emulator or a dubbed track. The video
+finishes on the app's own diagnostic receipt:
+
+| Observed result | v1.30.1 warm self-test |
+|---|---:|
+| Android engine bind | 129 ms |
+| TTS request to synthesis entry | 6 ms |
+| Request to first audio | **306 ms** |
+| Playback handoff | 7 ms |
+| Total self-test | 2,731 ms |
+| Returned audio | 114,480 PCM bytes / 2.385 s |
+| Generator backend | **QNN_HTP**, T=192 AOT bucket |
+| Generator RTF | **0.2644 / 3.78x real-time throughput** |
+| Packaged QNN AOT / QNN disabled | true / false |
+
+The clip uses the bundled `af_alloy` voice and the native Android system-TTS
+callback path. The exact receipt is also available as
+[machine-readable JSON](docs/benchmarks/v1.30.1-native-self-test.json), and the
+original-text continuous-reading script is in [demo](docs/demo/) for anyone who
+wants to reproduce a longer reader-app run without republishing third-party
+material.
+
 ## What makes this build unusual
 
 | Enhancement | What it does | Why it matters |

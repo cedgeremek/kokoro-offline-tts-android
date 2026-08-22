@@ -54,7 +54,7 @@ val kokoroModelAsset = "kokoro-v1.0-q8.onnx"
 val kokoroModelExpectedSha256 = "fbae9257e1e05ffc727e951ef9b9c98418e6d79f1c9b6b13bd59f5c9028a1478"
 val kokoroTokenizerAsset = "kokoro-v1.0-tokenizer.json"
 val kokoroTokenizerExpectedSha256 = "77a02c8e164413299b4b4c403b14f8e0e1c1b727db4d46a09d6327b861060a34"
-val misakiNativeExpectedSha256 = "c946ed0d6162b2e6e1f9a297c92b9a7247dbbc1855e4aa929e2f18434d79c823"
+val misakiNativeExpectedSha256 = "2e60a254358206283af794d6bfcf79416bac5fc4d5bc6a4907773afb8d20889f"
 val espeakNativeExpectedSha256 = "1a887ac7fad29783369630020708aeeeecfbc2036b8ac7e27898d11bdaba673d"
 val englishVoiceIds = listOf(
     "af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_kore",
@@ -302,6 +302,20 @@ check(sha256(istftModelFile) == "c59d8a097d1ffc424d7d3bf88a31e5784956c8fa37b6081
     "Pinned v1 iSTFT CPU suffix hash changed"
 }
 check(sha256(misakiNativeFile) == misakiNativeExpectedSha256) { "Native Misaki library changed" }
+val misakiNativeByteText = misakiNativeFile.readBytes().toString(Charsets.ISO_8859_1)
+listOf(
+    "Java_com_local_kokorotts_NativeMisaki_initialize",
+    "Java_com_local_kokorotts_NativeMisaki_phonemize",
+).forEach { symbol ->
+    check(misakiNativeByteText.contains(symbol)) {
+        "Native Misaki library does not export the public-package JNI symbol: $symbol"
+    }
+}
+listOf("C:\\Users\\", "com.derek").forEach { privateMarker ->
+    check(!misakiNativeByteText.contains(privateMarker)) {
+        "Native Misaki library contains a private build marker: $privateMarker"
+    }
+}
 check(sha256(espeakNativeFile) == espeakNativeExpectedSha256) { "Native eSpeak library changed" }
 englishVoiceIds.forEach { voice ->
     val voiceFile = file("src/main/assets/voices_v1/$voice.bin")
@@ -318,8 +332,8 @@ android {
         applicationId = "com.local.kokorotts"
         minSdk = 27
         targetSdk = 35
-        versionCode = 40
-        versionName = "1.30.0-kokoro-v1.0-duration-refined-global"
+        versionCode = 41
+        versionName = "1.30.1-kokoro-v1.0-public-jni-repair"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk { abiFilters += "arm64-v8a" }
         buildConfigField("boolean", "QNN_EP_INCLUDED", "true")

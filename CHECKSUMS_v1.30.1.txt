@@ -1,0 +1,2 @@
+ac9bc3349b09c676e01481936b2ffe01e74cd6327fa5dad983dc1074b0b6ad57  Kokoro-Offline-TTS-v1.30.1-S24-Ultra-QNN.apk
+f476ec617894303c0e66b777d0745dd0d9d4eafa9378a8417ba6eb610c259b16  Kokoro-v1.30.1-S24-Ultra-QNN-native-self-test.mp4
