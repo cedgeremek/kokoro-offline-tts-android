@@ -1,0 +1,56 @@
+{
+  "device": "Samsung Galaxy S24 Ultra SM-S928U1",
+  "soc": "Qualcomm SM8650",
+  "htp_arch": "v75",
+  "configuration": {
+    "source": "open Bloomberg article acceptance run",
+    "voice": "am_puck",
+    "android_rate": 1.0,
+    "model_speed": 1.3,
+    "sample_rate_hz": 24000,
+    "encoding": "PCM16 mono"
+  },
+  "session": {
+    "wall_seconds": 497.775,
+    "callback_bytes": 22102560,
+    "audio_seconds": 460.470,
+    "audio_to_wall_ratio": 0.9251,
+    "request_plans": 76,
+    "request_completions": 76,
+    "callback_chunks": 379
+  },
+  "generator_rtf": {
+    "count": 379,
+    "min": 0.26,
+    "p50": 0.29,
+    "p95": 0.32,
+    "p99": 0.36,
+    "max": 0.39,
+    "mean": 0.2911
+  },
+  "first_pcm_ms": {
+    "count": 76,
+    "min": 500.4,
+    "p50": 949.8,
+    "p95": 1372.8,
+    "p99": 1581.5,
+    "max": 1642.2,
+    "mean": 967.1711
+  },
+  "qnn_run_ms": {
+    "count": 379,
+    "min": 316.3,
+    "p50": 600.1,
+    "p95": 621.5,
+    "p99": 634.3,
+    "max": 639.3,
+    "mean": 575.8765
+  },
+  "failures": {
+    "cpu_generator_windows": 0,
+    "qnn_failures": 0,
+    "rejected_callback_chunks": 0,
+    "qnn_disable_events": 0,
+    "clipped_samples": 0
+  }
+}

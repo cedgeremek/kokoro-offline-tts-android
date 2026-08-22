@@ -1,0 +1,32 @@
+.gradle/
+.kotlin/
+.idea/
+.build-temp/
+build/
+app/build/
+native/**/target/
+local.properties
+qnn-validation.properties
+*.jks
+*.keystore
+*.pem
+*.p12
+release/
+
+# GitHub rejects ordinary Git blobs above 100 MiB. These generated/downloaded
+# build inputs stay out of Git; the installable APK is attached to Releases.
+app/src/main/assets/*.onnx
+app/src/main/assets/*.bin
+app/libs/*.aar
+
+# Keep the small voice tensors, tokenizer, eSpeak data, and license notices.
+!app/src/main/assets/voices_v1/*.bin
+!app/src/main/assets/kokoro-v1.0-tokenizer.json
+
+__pycache__/
+*.py[cod]
+*.log
+*.wav
+*.pcm
+*.raw
+*.npy

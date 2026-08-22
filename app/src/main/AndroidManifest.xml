@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:allowBackup="false" android:label="Kokoro Offline TTS" android:theme="@style/AppTheme">
+        <!-- Qualcomm FastRPC is supplied by the S24 vendor image. Declaring it
+             makes the library visible through Android's native linker namespace,
+             which QNN uses while publishing the HTP execution-provider device. -->
+        <uses-native-library android:name="libcdsprpc.so" android:required="false" />
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name=".KokoroTextToSpeechService" android:exported="true" android:label="Kokoro Offline TTS">
+            <intent-filter>
+                <action android:name="android.intent.action.TTS_SERVICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="android.speech.tts" android:resource="@xml/tts_engine" />
+        </service>
+    </application>
+</manifest>
