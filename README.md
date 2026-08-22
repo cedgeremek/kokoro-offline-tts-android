@@ -62,6 +62,63 @@ The accelerator here is the Qualcomm Hexagon **HTP/NPU**, not the Adreno GPU.
 The clever part is the CPU/HTP scheduling: CPU-only preparation overlaps the
 serialized HTP critical path, and the Android audio consumer overlaps both.
 
+## Full-context streaming: context first, chunks second
+
+```mermaid
+flowchart LR
+    A["Complete Android TTS request"] --> B["Misaki/eSpeak<br/>full-sentence phonemes"]
+
+    subgraph GLOBAL["One sentence-wide CPU front pass"]
+        B --> C["Shared conditioning<br/>style and intonation"]
+        C --> D["Exact token durations<br/>prosody and decoder timeline"]
+    end
+
+    D --> E["Word-safe candidate cuts"]
+    E --> F["Map cuts onto the exact<br/>duration-expanded frame path"]
+    F --> G["Refine oversized cores<br/>and coalesce tiny bridges"]
+    G --> H["Bounded windows W0, W1, W2...<br/>sliced from the same global context"]
+
+    subgraph STREAM["Heterogeneous streaming pipeline"]
+        H --> I["CPU exact source spectrum"]
+        I --> J["Serialized QNN HTP<br/>1,153-node vocoder suffix"]
+        J --> K["CPU iSTFT and PCM safety"]
+        K --> L["50 ms shared-timeline join"]
+        L --> M["Android callback and playback"]
+    end
+
+    J -. "while HTP runs Wn" .-> N["CPU prepares Wn+1"]
+    M -. "while Android plays Wn" .-> O["producer stays about<br/>one window ahead"]
+```
+
+The important reversal is that Kokoro is **not** asked to front several
+independent text chunks. The native frontend first creates one full-sentence
+phoneme stream, and the CPU model front runs over that complete stream once.
+Every accelerator window then receives the same sentence-level conditioning;
+its time-varying prosody and decoder inputs are cropped from that one global
+frame timeline.
+
+In practical terms, that is the “preseed”: every bounded window begins with
+conditioning derived from the entire sentence, not just from the fragment it
+will ultimately emit.
+
+The workflow is:
+
+1. Find speech-safe source boundaries without discarding the full sentence.
+2. Use the selected voice and speed to predict exact token durations for the
+   complete sentence.
+3. Map word boundaries onto those expanded frames instead of guessing from a
+   character or token count.
+4. Refine only cores that exceed the packaged AOT buckets, then give adjacent
+   windows shared context around each boundary.
+5. Render disjoint cores, blend their shared 50 ms timeline once, and begin
+   playback while later windows are still being produced.
+
+That retains sentence-level timing and intonation while keeping each HTP job
+small enough for low-latency streaming. It also avoids the prosody resets and
+timing drift a split-first implementation can introduce. The specific
+combination of one global front, exact duration remapping, bounded AOT windows,
+and overlapped CPU/HTP/playback is the central design contribution here.
+
 ## Measured on a real S24 Ultra
 
 All figures below are from physical-device runs, not emulator estimates.

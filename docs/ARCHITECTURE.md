@@ -49,12 +49,64 @@ three-entry access-order LRU favors B128/B192/B208 after reading prewarm.
 
 ## Global duration planning
 
-The CPU front runs once over the full sentence. Its token durations are mapped
-back onto linguistic boundaries, then the planner chooses word-safe windows
-that fit available contexts. Overlong spans are refined with a hard depth bound
-of 16, and tiny bridge fragments are coalesced. All mutations remap against the
-original sentence duration path, so a slow voice or unusual punctuation does
-not get treated as an average token-count guess.
+This is a context-first planner, not a split-first renderer:
+
+1. Misaki/eSpeak produces one authoritative phoneme stream for the complete
+   sentence.
+2. Source-text boundary candidates are mapped onto that existing phoneme
+   stream. A continuation is not independently phonemized.
+3. The CPU front runs once over the complete stream with the selected voice and
+   speed. It exports sentence-level conditioning, per-frame prosody/decoder
+   tensors, and the exact duration of every BOS/token/EOS entry.
+4. Candidate word boundaries are remapped onto the resulting duration-expanded
+   frame timeline. Delimiter frames remain assigned, so no part of the original
+   sentence path disappears between windows.
+5. Overlong cores are word-safely refined with a hard depth bound of 16; tiny
+   bridge fragments may be coalesced. Every mutation is remapped against the
+   original duration vector rather than independently re-fronted.
+6. Each bounded generator window shares the sentence-level conditioning tensor
+   and receives slices of the same global prosody and decoder timeline. The
+   window includes its disjoint output core plus available context around the
+   boundary.
+
+The opening is also duration-sized to provide useful playback runway for
+continuation prefetch. Because these decisions use the voice-specific duration
+path, a slow voice or unusual punctuation is not mistaken for an average
+token-count estimate.
+
+The practical result is whole-sentence context with progressive delivery:
+context is computed globally and accelerator work is bounded locally. Each
+core is emitted once, while shared boundary frames are blended once.
+
+## Pipeline overlap in time
+
+```mermaid
+sequenceDiagram
+    participant CPU as CPU workers
+    participant HTP as Qualcomm HTP
+    participant Android as Android audio
+
+    CPU->>CPU: Full-sentence G2P, front and duration plan
+    CPU->>CPU: Prepare W0 source spectrum
+    CPU->>HTP: Submit W0 vocoder
+    par HTP executes W0
+        HTP->>HTP: Serialized vocoder inference
+    and CPU prefetches W1
+        CPU->>CPU: Prepare W1 source spectrum
+    end
+    HTP-->>CPU: W0 acoustic frames
+    CPU->>CPU: iSTFT, PCM safety and seam join
+    CPU-->>Android: Deliver W0 PCM
+    par Android plays W0
+        Android->>Android: Consume callback audio
+    and Producer advances
+        CPU->>HTP: Submit W1 after the HTP lock is free
+    end
+```
+
+Only CPU-owned work overlaps an active HTP call. HTP invocations remain
+serialized, preventing competing accelerator sessions, while Android playback
+overlaps production of subsequent windows.
 
 ## Continuity and PCM safety
 
